@@ -88,11 +88,11 @@ int main(int argc, char **argv) {
         if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {  
                 fprintf(stderr, "Could not get host information, so fuck off\n");
                 exit(1);
-         }
+         }//
 printf(Z1"                   ▄"Z0);printf(CLR_GRY"\t\t\t     ╔═══════════╗\n"CLR_RST);
-printf(Z1"                  ▄█▄"Z0);printf(Z3"\t\t\t▄▀▄");printf(CLR_GRY"  ║"CLR_RST);printf(Z3" Uptime    ");printf(CLR_GRY"║ %02ld:%02ld:%02ld\n"CLR_RST, info.uptime/3600, info.uptime%3600/60,info.uptime%60);
-printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"CLR_RST);printf(BW"▄"Z0);printf(Z1"███"Z0);printf(BW"▄"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");printf(Z3"▀"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n"CLR_RST);
-printf(Z1"                ▄█████▄"Z0);printf(Z3"       ▄█        ▄█  ▄█████▄    ▄█    █▄ ▀████    ▐████▀\n"Z0);
+printf(Z1"                  ▄█▄"Z0);printf(Z3"\t      ▄█\t▄▀▄");printf(CLR_GRY"  ║"CLR_RST);printf(Z3" Uptime    ");printf(CLR_GRY"║ %02ld:%02ld:%02ld\n"CLR_RST, info.uptime/3600, info.uptime%3600/60,info.uptime%60);
+printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"CLR_RST);printf(BW"▄"Z0);printf(Z1"███"Z0);printf(BW"▄"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀"Z0);printf(Z3"███"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀");printf(Z3"▀"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n"CLR_RST);
+printf(Z1"                ▄█████▄"Z0);printf(Z3"      ███        ▄█  ▄█████▄    ▄█    █▄ ▀████    ▐████▀\n"Z0);
 printf(Z1"               ▄███████▄"Z0);printf(Z3"     ███       ███  ███▀▀▀██  ███    ███  ███▌   ████▀ \n"Z0);
 printf(Z1"               █████████▄"Z0);printf(Z3"    ███       ███▌ ███   ██▌ ███    ███   ▀███▄███▀   \n"Z0);
 printf(Z1"             ▄  █████████▄"Z0);printf(Z3"   ███       ███▌ ███   ███ ███    ███   ████▀██▄    \n"Z0);
