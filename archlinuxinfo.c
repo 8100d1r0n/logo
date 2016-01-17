@@ -24,7 +24,7 @@ static void disk(void);
 static void date(void);
 
 void help(void) {
-      printf(Z3" Linux Info --- By:  8100d1r0n  April. 2015\n"             
+      printf(Z3" Linux Info --- By:  8100d1r0n  April. 2015\n"
              "-h help msg :)\n"Z0);
       exit(0);
 }
@@ -39,11 +39,11 @@ static void date(void) {
 
    strftime(buffer,80,"%a %d %b %H:%M", info);
    printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Date      "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, buffer);
-  
+
 }
 
 
-static void disk(void) { 
+static void disk(void) {
     struct statvfs info;
     if(!statvfs("/", &info)) {
         unsigned long left  = (info.f_bfree * info.f_frsize);
@@ -56,7 +56,7 @@ static void disk(void) {
 }
 
 int main(int argc, char **argv) {
-	
+
 	FILE *fpt;
 	char packages[50] = " ";
 	fpt = popen ("pacman -Qq | wc -l", "r");
@@ -68,9 +68,9 @@ int main(int argc, char **argv) {
 	struct passwd *p;
 	uid_t uid=1000; // 1000 user uid number.
 
-	if ((p = getpwuid(uid)) == NULL) 
+	if ((p = getpwuid(uid)) == NULL)
 		perror("getpwuid() error");
- 
+
     if (argc >= 2) {
         int c;
         while ((c = getopt(argc, argv, "h")) != -1) {
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 {
         char computer[256];
         struct utsname uts;
-        if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {  
+        if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {
                 fprintf(stderr, "Could not get host information, so fuck off\n");
                 exit(1);
          }//
