@@ -1,47 +1,50 @@
 /*
- *By: 8100d1r0n -- April. 2015.
- *Compile: clang -I/usr/include archlinuxinfo.c -L/usr/lib -o archlinuxinfo
-*/
+ * ======================================================================
+ *  Filename:  archlinuxinfo.c
+ *
+ *   Version:  2.6
+ *   Created:  04/08/2015 02:07:35 AM
+ *  Revision:  02/19/2016 04:49:09 AM
+ *  Compiler:  gcc
+ *
+ *    Author:  8100d1r0n (https://github.com/8100d1r0n)
+ *    E-Mail:  echo "ODEwMGQxcjBuKGF0KXJpc2V1cChkb3QpbmV0Cg=="|base64 -d
+ * ======================================================================
+ */
+
+#include <sys/statvfs.h>
 #include <sys/sysinfo.h>
 #include <sys/utsname.h>
 #include <sys/types.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <time.h>
 #include <pwd.h>
-#include <sys/statvfs.h>
 
-#define Z0  "\x1b[0m"    //Reset
-#define Z1  "\x1b[34m"   //Blue
-#define Z2  "\x1b[33m"   //Yellow
-#define Z3  "\x1b[31m"   //Red
-#define BW  "\e[1m\e[0;34;47m" //BgColor = white  FgColor = Blue
+#define PRNT(args...)   printf(args)
+#define INFO_UPTIME     info.uptime/3600, info.uptime%3600/60,info.uptime%60
+#define STRG	        "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s"
 
-#define CLR_GRY  "\x1b[0;37m"
-#define CLR_RST  Z0
-static void disk(void);
-static void date(void);
+#define RT   "\x1b[0m"          //Reset
+#define BL   "\x1b[34m"         //Blue
+#define RD   "\x1b[31m"         //Red
+#define GR   "\x1b[0;37m"       //Gray
+#define BW   "\e[1m\e[0;34;47m" //BgColor = white  FgColor = Blue"
 
-void help(void) {
-      printf(Z3" Linux Info --- By:  8100d1r0n  April. 2015\n"
-             "-h help msg :)\n"Z0);
-      exit(0);
-}
 static void date(void) {
    time_t rawtime;
    struct tm *info;
    char buffer[80];
 
-   time( &rawtime );
+   time(&rawtime);
 
-   info = localtime( &rawtime );
+   info = localtime(&rawtime);
 
    strftime(buffer,80,"%a %d %b %H:%M", info);
-   printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Date      "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, buffer);
+   PRNT(GR" %s\n"RT, buffer);
 
 }
-
 
 static void disk(void) {
     struct statvfs info;
@@ -50,38 +53,27 @@ static void disk(void) {
         unsigned long total = (info.f_blocks * info.f_frsize);
         unsigned long used  = total - left;
         float perc  = (float)used / (float)total;
-        printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Disk      "Z0);printf(CLR_GRY"║ %.2f%% of %.2f GB\n"CLR_RST,
+        PRNT(GR" %.2f%% of %.2f GB\n"RT,
                 perc * 100, (float)total / 1e+09);
  }
 }
 
-int main(int argc, char **argv) {
+int main(void) {
 
-	FILE *fpt;
-	char packages[50] = " ";
-	fpt = popen ("pacman -Qq | wc -l", "r");
-	fgets(packages, 50, fpt);
-	pclose(fpt);
+        FILE *fptr;
+        char packages[50] = " ";
+        fptr = popen ("pacman -Qq | wc -l", "r");
+        fgets(packages, 50, fptr);
+        pclose(fptr);
 
-	struct sysinfo info;
-	sysinfo(&info);
-	struct passwd *p;
-	uid_t uid=1000; // 1000 user id
+        struct sysinfo info;
+        sysinfo(&info);
+        struct passwd *p;
+        uid_t uid=1000; /* 1000 user id. Info command: $ id -u */
 
-	if ((p = getpwuid(uid)) == NULL)
-		perror("getpwuid() error");
+        if ((p = getpwuid(uid)) == NULL)
+                perror("getpwuid() error");
 
-    if (argc >= 2) {
-        int c;
-        while ((c = getopt(argc, argv, "h")) != -1) {
-            switch (c) {
-                case 'h':
-                default:
-                    help();
-                    break;
-    }
-  }
-}
 {
         char computer[256];
         struct utsname uts;
@@ -89,25 +81,27 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "Could not get host information, so fuck off\n");
                 exit(1);
          }
-printf(Z1"                   ▄"Z0);printf(CLR_GRY"\t\t\t     ╔═══════════╗\n"CLR_RST);
-printf(Z1"                  ▄█▄"Z0);printf(Z3"\t      ▄█\t▄▀▄");printf(CLR_GRY"  ║"CLR_RST);printf(Z3" Uptime    ");printf(CLR_GRY"║ %02ld:%02ld:%02ld\n"CLR_RST, info.uptime/3600, info.uptime%3600/60,info.uptime%60);
-printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"CLR_RST);printf(BW"▄"Z0);printf(Z1"███"Z0);printf(BW"▄"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀"Z0);printf(Z3"███"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀");printf(Z3"▀"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n"CLR_RST);
-printf(Z1"                ▄█████▄"Z0);printf(Z3"      ███        ▄█  ▄█████▄    ▄█    █▄ ▀████    ▐████▀\n"Z0);
-printf(Z1"               ▄███████▄"Z0);printf(Z3"     ███       ███  ███▀▀▀██  ███    ███  ███▌   ████▀ \n"Z0);
-printf(Z1"               █████████▄"Z0);printf(Z3"    ███       ███▌ ███   ██▌ ███    ███   ▀███▄███▀   \n"Z0);
-printf(Z1"             ▄  █████████▄"Z0);printf(Z3"   ███       ███▌ ███   ███ ███    ███   ████▀██▄    \n"Z0);
-printf(Z1"            ▄██▄ ▀████████▄"Z0);printf(Z3"  ███▌    ▄ ███  ███   ███ ███    ███ ▄███     ███▄ \n"Z0);
-printf(Z1"           ▄█████▄█████████▄"Z0);printf(Z3" █████▄▄██ █▀   ███   ███  ▀██████▀ ████       ███▄\n"Z0);
-printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀"CLR_RST);printf(BW"▄"Z0);printf(Z1"██████▀▀▀▀▀██████"Z0);printf(BW"▄"Z0);printf(Z3"███");printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀"CLR_RST);printf(Z3"██▀"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n"CLR_RST);
-printf(Z1"         ▄████▀         ▀████▄"Z0);printf(CLR_GRY"\t\t     ║"CLR_RST);printf(Z3" OS        "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, uts.sysname);
-printf(Z1"        ▄████             ██ ▀▄"Z0);printf(CLR_GRY"\t\t     ║"CLR_RST);printf(Z3" User      "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, p->pw_name); //getlogin());
-printf(Z1"       ▄████               ██▄  "Z0);printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Hostname  "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, computer);
-printf(Z1"      ▄█████               ████▄ "Z0);printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Kernel    "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, uts.release);
-printf(Z1"     ▄█████                 █████▄ "Z0);printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Hardware  "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, uts.machine);
-printf(Z1"    ▄█████                   █████▄"Z0);printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Shell     "Z0);printf(CLR_GRY"║ %s\n"CLR_RST, p->pw_shell);
-printf(Z1"   ▄██████▄                 ▄██████▄"Z0);printf(CLR_GRY"\t     ║"CLR_RST);printf(Z3" Packages  "Z0);printf(CLR_GRY"║ %s"CLR_RST,packages);
-printf(Z1"  ▄██████▀▀                 ▀▀██████▄"Z0);disk();
-printf(Z1" ▄██▀▀                          ▀▀▀██▄"Z0);date();
-printf(Z1"▄▀                                   ▀▄"Z0);printf(CLR_GRY"\t     ╚═══════════╝\n"CLR_RST);
-  }
+
+PRNT("%52s%s%12s%21s%13s%s%s%02ld:%02ld:%02ld\n"
+                   ,BL"                   ▄                         ",GR"╔═══════════╗ \n"
+                    BL"                  ▄█▄        ",RD" ▄█",RD"▄▀▄",GR"║",RD" Uptime    ",GR"║ ",INFO_UPTIME);
+PRNT(STRG,GR"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",BW"▄",BL"███",BW"▄"  ,GR"▀▀▀▀▀▀▀",RD"███",GR"▀▀▀▀▀▀▀▀",RD"▀",GR"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n"
+                    BL"                ▄█████▄      ",RD"███        ▄█  ▄█████▄    ▄█    █▄ ▀████    ▐████▀\n"
+                    BL"               ▄███████▄     ",RD"███       ███  ███▀▀▀██  ███    ███  ███▌   ████▀ \n"
+                    BL"               █████████▄    ",RD"███       ███▌ ███   ██▌ ███    ███   ▀███▄███▀   \n"
+                    BL"             ▄  █████████▄   ",RD"███       ███▌ ███   ███ ███    ███   ████▀██▄    \n"
+                    BL"            ▄██▄ ▀████████▄  ",RD"███▌    ▄ ███  ███   ███ ███    ███ ▄███     ███▄ \n"
+                    BL"           ▄█████▄█████████▄ ",RD"█████▄▄██ █▀   ███   ███  ▀██████▀ ████       ███▄\n"
+       GR"▀▀▀▀▀▀▀▀▀▀",BW"▄",RT,BL"██████▀▀▀▀▀██████" ,BW"▄",RD"███",GR"▀▀▀▀▀▀▀▀▀▀▀▀",RD"██",GR"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n");
+PRNT(BL"%s%s%s%s%s\n","         ▄████▀         ▀████▄               ",GR"║",RD" OS        ",GR"║ ",uts.sysname);
+PRNT(BL"%s%s%s%s%s\n","        ▄████             ██ ▀▄              ",GR"║",RD" User      ",GR"║ ",p->pw_name);//getlogin());
+PRNT(BL"%s%s%s%s%s\n","       ▄████               ██▄               ",GR"║",RD" Hostname  ",GR"║ ",computer);
+PRNT(BL"%s%s%s%s%s\n","      ▄█████               ████▄             ",GR"║",RD" Kernel    ",GR"║ ",uts.release);
+PRNT(BL"%s%s%s%s%s\n","     ▄█████                 █████▄           ",GR"║",RD" Hardware  ",GR"║ ",uts.machine);
+PRNT(BL"%s%s%s%s%s\n","    ▄█████                   █████▄          ",GR"║",RD" Shell     ",GR"║ ",p->pw_shell);
+PRNT(BL"%77s%s%s%s%s","   ▄██████▄                 ▄██████▄         ",GR"║",RD" Packages  ",GR"║ ",packages);
+PRNT(BL"%81s%s%s%s\b","  ▄██████▀▀                 ▀▀██████▄        ",GR"║",RD" Disk      ",GR"║ ");disk();
+PRNT(BL"%67s%s%s%s\b"," ▄██▀▀                          ▀▀▀██▄       ",GR"║",RD" Date      ",GR"║ ");date();
+PRNT(BL"%s%s\b\b\b\n","▄▀                                   ▀▄      ",GR"╚═══════════╝\n"RT);
+	}
 }
