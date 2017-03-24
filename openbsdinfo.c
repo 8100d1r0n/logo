@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <time.h>
+#include <sys/time.h>
 #include <sys/sysctl.h>
 #include <sys/statvfs.h>
 #define Z0 "\x1b[0m"     //Reset
@@ -20,7 +20,7 @@
 static void disk(void);
 
 void help(void) {
-      printf(Z3" Linux Info --- By:  8100d1r0n  April. 2015\n"             
+      printf(Z3" OpenBSD Info --- By:  8100d1r0n  April. 2015\n"             
              "-h help msg :)\n"Z0);
       exit(0);
 }
