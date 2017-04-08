@@ -1,42 +1,37 @@
 /*
- * FreeBSD Info Program -- 
- * By: 8100d1r0n -- April. 2015.
+ * -- FreeBSD Info Program --
+ *    April. 2015.
 */
 #include <sys/utsname.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pwd.h>
-#include <time.h>
+#include <sys/time.h>
 #include <sys/sysctl.h>
 #include <sys/statvfs.h>
-#define Z0 "\x1b[0m"     //Reset
-#define Z1  "\x1b[1;34m"   //Blue
-#define Z2  "\x1b[1;37m"   //White
-#define Z3  "\x1b[30m"   //Black
-#define Z4  "\x1b[31m"   //Red
-#define Z5 "\x1b[37m"	 //Cyan
-#define BK	"\e[1m\e[37;1;41m"
-#define BS	"\e[1m\e[37;1;40m"
-#define KB	"\e[1m\e[31;1;60m"
-#define MB	"\e[1m\e[44;1;37m"
+
+#define Z0 "\x1b[0m"
+#define Z1 "\x1b[1;34m"
+#define Z2 "\x1b[1;37m"
+#define Z3 "\x1b[30m"
+#define Z4 "\x1b[31m"
+#define Z5 "\x1b[37m"
+#define BK "\e[1m\e[37;1;41m"
+#define BS "\e[1m\e[37;1;40m"
+#define KB "\e[1m\e[31;1;60m"
+#define MB "\e[1m\e[44;1;37m"
 
 static void disk(void);
 
-void help(void) {
-      printf(Z3" FreeBSD Info --- By:  8100d1r0n  April. 2015\n"             
-             "-h help msg :)\n"Z0);
-      exit(0);
-}
-
-static void disk(void) { 
+static void disk(void) {
     struct statvfs info;
     if(!statvfs("/", &info)) {
         unsigned long left  = (info.f_bfree * info.f_frsize);
         unsigned long total = (info.f_blocks * info.f_frsize);
         unsigned long used  = total - left;
         float perc  = (float)used / (float)total;
-        printf(Z4"\t     Disk "Z0);printf(Z5"     %.2f%% of %.2f GB\n"Z0,
+        printf(Z5"%25s     %.2f%% of %.2f GB\n",Z4" Disk "Z5,                                                                                     
                 perc * 100, (float)total / 1e+09);
  }
 }
@@ -48,14 +43,15 @@ static void disk(void) {
         size_t size;
         char buf[256];
         if(strftime(buf, sizeof(buf), NULL, localtime(nowp)))
-             mib[0] = CTL_KERN;
+
+        mib[0] = CTL_KERN;
         mib[1] = KERN_BOOTTIME;
         size = sizeof(boottime);
         if(sysctl(mib, 2, &boottime, &size, NULL, 0) != -1 &&
-                        boottime.tv_sec) {
+                boottime.tv_sec) {
                 uptime = *nowp - boottime.tv_sec;
                 if(uptime > 60)
-                        uptime += 30;
+                uptime += 30;
                 days = (int)uptime / 86400;
                 uptime %= 86400;
                 hrs = (int)uptime / 3600;
@@ -74,7 +70,8 @@ static void disk(void) {
                 putchar('\n');
         }
 }
-int main(int argc, char **argv) {
+int main() {
+
 	FILE *fpt;
 	char packages[50] = " ";
 	fpt = popen ("pkg info | wc -l", "r");
@@ -82,58 +79,44 @@ int main(int argc, char **argv) {
 	pclose(fpt);
 
 	struct passwd *p;
-	uid_t uid=1001; // 1000 user uid number.
+	uid_t uid=1001;
 
-	if ((p = getpwuid(uid)) == NULL) 
+	if ((p = getpwuid(uid)) == NULL)
 		perror("getpwuid() error");
- 
-    if (argc >= 2) {
-        int c;
-        while ((c = getopt(argc, argv, "h")) != -1) {
-            switch (c) {
-                case 'h':
-                default:
-                    help();
-                    break;
-            }
-        }
-    }
-{
+
         char computer[256];
         struct utsname uts;
         time_t timeval;
-       
+
         (void)time(&timeval);
-       
-        if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {  
+
+        if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {
                 fprintf(stderr, "Could not get host information, so fuck off\n");
                 exit(1);
-         } 
+         }
 time_t now;
 time(&now);
-printf(Z4"             ▄\n"Z0);
-printf(Z4"          ▄███▀            ▀█▄\n"Z0);
-printf(Z4"         ▓███               ▄█▒\n"Z0);
-printf(Z4"        ▒▓██    ▓▄▄░▒▓▓░"Z0);printf(Z4"▄▄▓░▓█▓\n"Z0);
-printf(Z4"       ▐▒▓██▌ ▄████████████▓▒▀"Z0); uptime(&now);  
-printf(Z4"        ▀▒███▓████████████████"Z0);printf(Z4"\t     OS"Z0);printf(Z5"        %s\n", uts.sysname);
-printf(Z4"         ▀▒█████████"Z0);printf(BK"▄▄"Z0);printf(Z4"███"Z0);printf(BK"▄██▄"Z0);printf(Z4"█▄"Z0);printf(Z4"\t     User"Z0);printf(Z5"      %s\n",p->pw_name);// getlogin());
-printf(Z4"          ▀▓███████"Z0);printf(Z2"████"Z0);printf(Z4"██"Z0);printf(BK"▐██"Z0);printf(BS"▀"Z0);printf(BK"▌"Z0);printf(Z4"█"Z0);printf(Z4"\t     Hostname"Z0);printf(Z5"  %s\n", computer);
-printf(Z4"            ▀▒████"Z0);printf(BK"▐██"Z0);printf(BS"▀▀"Z0);printf(Z4"███"Z0);printf(BK"▐"Z0);printf(BS" ▀█"Z0);printf(Z4"█▌"Z0);printf(Z4"     Version"Z0);printf(Z5"   %s\n", uts.release);
-printf(Z4"             ██████"Z0);printf(Z2"█"Z0);printf(Z3"  "Z0);printf(BS"▀▌"Z0);printf(Z4"▀▄▄▄▄▀█▄▄"Z0); printf(Z4"    Hardware"Z0);printf(Z5"  %s\n", uts.machine);
-printf(Z4"            ▐▒█████▓"Z0);printf(BK"▀▀"Z0);printf(Z4"█████▓▀▄████"Z0);printf(Z4"   Shell"Z0);printf(Z5"     %s\n", p->pw_shell);
-printf(Z4"             ▒▓██▀ ████▄▀▀▄▄█▀██▀"Z0);printf(Z4"    Userdir"Z0);printf(Z5"   %s\n", p->pw_dir);
-printf(Z4"              ▀▓█▓▄ ▀▀▀▀▀▀▀▄▄█▀"Z0);printf(Z4"\t     Packages"Z0);printf(Z5"  %s", packages);
-printf(Z4"                 ▀▀███████▀"Z0); disk();
-printf(Z4"               ▄▄▄███████▄▄▄"Z0);printf(Z4"\t     Date"Z0);printf(Z5"      %s", ctime(&timeval));
-printf(Z4"          ▄▄▄███▀▄▓█████▓▄▀███▄▄▄\n"Z0);
-printf(Z1" ▒▓██▓▓▓░"Z0);printf(Z4"█████▄"Z0);printf(Z1" ░▒▓████████"Z0);printf(Z4"▄██████"Z0);printf(Z1"░▒███████▓▓▓▒▄   ▄█████▓▒ ███████▓▄\n"Z0);
-printf(Z1" ▓███   "Z0);printf(Z4"▓████ ▀██"Z0);printf(Z1"  ░▒▓██▀"Z0);printf(Z4" ██▀ █████ "Z0);printf(Z1"   ██    ▀███ ▒██▀      ██    ▀█▓▒\n"Z0);
-printf(Z1" ████    "Z0);printf(Z4"▀▓███"Z0);printf(Z1"               "Z0);printf(Z4"▐██▒▀"Z0);printf(Z1"     ██    ▄██▀ ▒██▄      ██      ██▓\n"Z0);
-printf(Z1" ███████ ▓████▄█▓▒▄ ▄██▓▓▒▄   ▄██▓▓▒▄  ████████   ▀▓█████▄  ██      ██▓\n"Z0);
-printf(Z1" ████    ▓████  ▀▀▀░██▀  ▀██ ▒██▀  ▀██ ██    ▀██▄       ▀██ ██      ███\n"Z0);
-printf(Z1" ████    ▓████     ▒██▀▀▀▀▀▀ ███▀▀▀▀▀▀ ██    ▄███       ▄██ ██    ▄███\n"Z0);
-printf(Z1" ████    ▓████     ▀███▄▄██▀  ███▄▄██▀ ████████▀  ▒██████▀  ████████▀\n"Z0);
-        
-  }
+printf(Z4"%s\n","             ▄"Z0);
+printf(Z4"%s\n","          ▄███▀            ▀█▄"Z0);
+printf(Z4"%s\n","         ▓███               ▄█▒"Z0);
+printf(Z4"%s%s\n","        ▒▓██    ▓▄▄░▒▓▓░"Z0,Z4"▄▄▓░▓█▓"Z0);
+printf(Z4"%s","       ▐▒▓██▌ ▄████████████▓▒▀"Z0); uptime(&now);
+printf(Z4"%s%19s%15s\n","        ▀▒███▓████████████████"Z0,Z4"OS"Z5, uts.sysname);
+printf(Z4"%s%s%s%s%s%20s%10s\n","         ▀▒█████████"Z0,BK"▄▄"Z0,Z4"███"Z0,BK"▄██▄"Z0,Z4"█▄"Z0,Z4"User"Z5,p->pw_name);// getlogin());
+printf(Z4"%s%s%s%s%s%s%s%24s%18s\n","          ▀▓███████"Z0,Z2"████"Z0,Z4"██"Z0,BK"▐██"Z0,BS"▀"Z0,BK"▌"Z0,Z4"█"Z0,Z4"Hostname"Z5, computer);
+printf(Z4"%s%s%s%s%s%s%s%22s%6s\n","            ▀▒████"Z0,BK"▐██"Z0,BS"▀▀"Z0,Z4"███"Z0,BK"▐"Z0,BS" ▀█"Z0,Z4"█▌"Z0,Z4"Version"Z5, uts.release);
+printf(Z4"%s%s%s%s%s%22s%7s\n","             ██████"Z0,Z2"█"Z0,Z3"  "Z0,BS"▀▌"Z0,Z4"▀▄▄▄▄▀█▄▄"Z0,Z4"Hardware"Z5, uts.machine);
+printf(Z4"%s%s%s%18s%23s\n","            ▐▒█████▓"Z0,BK"▀▀"Z0,Z4"█████▓▀▄████"Z0,Z4"Shell"Z5, p->pw_shell);
+printf(Z4"%s%21s%13s\n","             ▒▓██▀ ████▄▀▀▄▄█▀██▀"Z0,Z4"Userdir"Z5, p->pw_dir);
+printf(Z4"%s%24s%6s","              ▀▓█▓▄ ▀▀▀▀▀▀▀▄▄█▀"Z0,Z4"Packages"Z5, packages);
+printf(Z4"%s","                 ▀▀███████▀"Z0); disk();
+printf(Z4"%s%23s%31s","               ▄▄▄███████▄▄▄"Z0,Z4"Date"Z5, ctime(&timeval));
+printf(Z4"%s\n","          ▄▄▄███▀▄▓█████▓▄▀███▄▄▄"Z0);
+printf(Z1"%s%s%s%s%s\n"," ▒▓██▓▓▓░"Z0,Z4"█████▄"Z0,Z1" ░▒▓████████"Z0,Z4"▄██████"Z0,Z1"░▒███████▓▓▓▒▄   ▄█████▓▒ ███████▓▄"Z0);
+printf(Z1"%s%s%s%s%s\n"," ▓███   "Z0,Z4"▓████ ▀██"Z0,Z1"  ░▒▓██▀"Z0,Z4" ██▀ █████ "Z0,Z1"   ██    ▀███ ▒██▀      ██    ▀█▓▒"Z0);
+printf(Z1"%s%s%s%s%s\n"," ████    "Z0,Z4"▀▓███"Z0,Z1"               "Z0,Z4"▐██▒▀"Z0,Z1"     ██    ▄██▀ ▒██▄      ██      ██▓"Z0);
+printf(Z1"%s\n"," ███████ ▓████▄█▓▒▄ ▄██▓▓▒▄   ▄██▓▓▒▄  ████████   ▀▓█████▄  ██      ██▓"Z0);
+printf(Z1"%s\n"," ████    ▓████  ▀▀▀░██▀  ▀██ ▒██▀  ▀██ ██    ▀██▄       ▀██ ██      ███"Z0);
+printf(Z1"%s\n"," ████    ▓████     ▒██▀▀▀▀▀▀ ███▀▀▀▀▀▀ ██    ▄███       ▄██ ██    ▄███"Z0);
+printf(Z1"%s\n"," ████    ▓████     ▀███▄▄██▀  ███▄▄██▀ ████████▀  ▒██████▀  ████████▀"Z0);
 }

@@ -1,6 +1,6 @@
 /*
- * OpenBSD Info Program -- 
- * By: 8100d1r0n -- April. 2015.
+ * -- OpenBSD Info Program -- 
+ *      -- April.2015 --
 */
 #include <sys/utsname.h>
 #include <stdio.h>
@@ -73,7 +73,7 @@ static void disk(void) {
 int main(int argc, char **argv) {
 	FILE *fpt;
 	char packages[50] = " ";
-	fpt = popen ("pkg_info | gwc -l", "r");
+	fpt = popen ("pkg_info -q | gwc -l", "r");
 	fgets(packages, 50, fpt);
 	pclose(fpt);
 
