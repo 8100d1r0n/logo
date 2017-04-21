@@ -1,5 +1,5 @@
 /*
- * -- OpenBSD Info Program -- 
+ * -- OpenBSD Info Program --
  *      -- April.2015 --
 */
 #include <sys/utsname.h>
@@ -20,12 +20,12 @@
 static void disk(void);
 
 void help(void) {
-      printf(Z3" OpenBSD Info --- By:  8100d1r0n  April. 2015\n"             
+      printf(Z3" OpenBSD Info --- By:  8100d1r0n  April. 2015\n"
              "-h help msg :)\n"Z0);
       exit(0);
 }
 
-static void disk(void) { 
+static void disk(void) {
     struct statvfs info;
     if(!statvfs("/", &info)) {
         unsigned long left  = (info.f_bfree * info.f_frsize);
@@ -80,9 +80,9 @@ int main(int argc, char **argv) {
 	struct passwd *p;
 	uid_t uid=1000; // 1000 user uid number.
 
-	if ((p = getpwuid(uid)) == NULL) 
+	if ((p = getpwuid(uid)) == NULL)
 		perror("getpwuid() error");
- 
+
     if (argc >= 2) {
         int c;
         while ((c = getopt(argc, argv, "h")) != -1) {
@@ -116,8 +116,8 @@ printf(Z2" ██    ██ ██    ██ ██▀  ▀██ ██   ▀�
 printf(Z2" ██    ██ ██    ██ ██▀▀▀▀▀▀ ██    ██ ██    ▄███       ▄██ ██    ▄███ \n"Z0);
 printf(Z2"  ▀████▀ ▄██████▀  ▀██▄▄██▀ ██    ██ ████████▀  ███████▀  ████████▀  \n"Z0);
 printf(Z5"%s%s%s%s%s\n","▀▀▀▀▀▀▀▀▀▀",  Z2"██"Z0,Z5"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"Z0,Z2"█▀"Z0,Z5"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"Z0);
-printf(Z2"%20s%30s%s%16s%s\n",      " ██" Z0,Z5"║",Z4" OS",      Z5"║ ", uts.sysname); 
-printf(Z2"%25s%29s%s%14s%s\n",     " ▀▀▀▀"Z0,Z5"║",Z4" User",    Z5"║ ", getlogin()); 
+printf(Z2"%20s%30s%s%16s%s\n",      " ██" Z0,Z5"║",Z4" OS",      Z5"║ ", uts.sysname);
+printf(Z2"%25s%29s%s%14s%s\n",     " ▀▀▀▀"Z0,Z5"║",Z4" User",    Z5"║ ", getlogin());
 printf(Z5"%37s%s%10s%s\n",                     "║",Z4" Hostname",Z5"║ ", computer);
 printf(Z5"%37s%s%11s%s\n",                     "║",Z4" Version", Z5"║ ", uts.release);
 printf(Z5"%37s%s%10s%s\n",                     "║",Z4" Hardware",Z5"║ ", uts.machine);

@@ -31,7 +31,7 @@ static void disk(void) {
         unsigned long total = (info.f_blocks * info.f_frsize);
         unsigned long used  = total - left;
         float perc  = (float)used / (float)total;
-        printf(Z5"%25s     %.2f%% of %.2f GB\n",Z4" Disk "Z5,                                                                                     
+        printf(Z5"%25s     %.2f%% of %.2f GB\n",Z4" Disk "Z5,
                 perc * 100, (float)total / 1e+09);
  }
 }
