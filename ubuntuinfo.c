@@ -22,12 +22,12 @@
 static void disk(void);
 
 void help(void) {
-      printf(Z3" Linux Info --- By:  8100d1r0n  April. 2015\n"             
+      printf(Z3" Linux Info --- By:  8100d1r0n  April. 2015\n"
              "-h help msg :)\n"Z0);
       exit(0);
 }
 
-static void disk(void) { 
+static void disk(void) {
     struct statvfs info;
     if(!statvfs("/", &info)) {
         unsigned long left  = (info.f_bfree * info.f_frsize);
@@ -40,7 +40,7 @@ static void disk(void) {
 }
 
 int main(int argc, char **argv) {
-	
+
 	FILE *fpt;
 	char packages[50] = " ";
 	fpt = popen ("dpkg --list|wc -l", "r");
@@ -52,9 +52,9 @@ int main(int argc, char **argv) {
 	struct passwd *p;
 	uid_t uid=1000; // 1000 user uid number.
 
-	if ((p = getpwuid(uid)) == NULL) 
+	if ((p = getpwuid(uid)) == NULL)
 		perror("getpwuid() error");
- 
+
     if (argc >= 2) {
         int c;
         while ((c = getopt(argc, argv, "h")) != -1) {
@@ -69,15 +69,15 @@ int main(int argc, char **argv) {
 {
         char computer[256];
         struct utsname uts;
-        time_t timeval;       
-        (void)time(&timeval);      
-        if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {  
+        time_t timeval;
+        (void)time(&timeval);
+        if(gethostname(computer, 255) != 0 || uname(&uts) < 0) {
                 fprintf(stderr, "Could not get host information, so fuck off\n");
                 exit(1);
          }
 time_t now;
-printf(Z1"                                      ▒█████░\n"Z0);        
-printf(Z1"                                    ░████████▒\n"Z0);        
+printf(Z1"                                      ▒█████░\n"Z0);
+printf(Z1"                                    ░████████▒\n"Z0);
 printf(Z1"                        ░░███████░░ ░█████████"Z0);printf(CLR_GRY"\t\t\t\t      ╔═══════════╗\n"CLR_RST);
 printf(Z1"                    ░██████████████░ ▒███████░"Z0);printf(CLR_GRY"\t\t\t\t      ║"CLR_RST);printf(Z3" Uptime    ");printf(CLR_GRY"║ %02ld:%02ld:%02ld\n"CLR_RST, info.uptime/3600, info.uptime%3600/60,info.uptime%60);
 printf(Z1"                ░██  ░██████████████▒  ░███░"Z0);printf(CLR_GRY"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\n"CLR_RST);
